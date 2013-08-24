@@ -7,6 +7,7 @@ public class Player : MonoBehaviour {
 	float moveX = 0.0f;
 	float moveY = 0.0f;
 	float speed = 0.25f;
+	bool lockMovement = true;
 	
 	void Awake() {
 		sprite = GetComponent<tk2dSprite>();
@@ -15,7 +16,7 @@ public class Player : MonoBehaviour {
 	}
 	
 	void Update() {
-		
+		if(lockMovement) return;
 		float x = 0.0f;
 		float y = 0.0f;
 		

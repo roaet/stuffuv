@@ -12,6 +12,7 @@ public class ShadowFollow : MonoBehaviour {
 	private float FLASH_TIME = 0.01f;
 	private float LIGHT_SPILL = 0.1f;
 	private float MATCH_DEATH = 20.0f;
+	private int FLASH_LEVEL = 4;
 	private int darkLevel;
 	private bool doFlash;
 	private bool maxLight;
@@ -33,7 +34,7 @@ public class ShadowFollow : MonoBehaviour {
 	}
 	
 	public void FlashDarkness() {
-		if(maxLight || darkLevel > 2 || doFlash) return;
+		if(maxLight || darkLevel > FLASH_LEVEL || doFlash) return;
 		doFlash = true;
 		flashTimeStart = Time.time;
 	}
@@ -74,7 +75,7 @@ public class ShadowFollow : MonoBehaviour {
 		sprite.spriteId = darkLevel;
 		if(doFlash) {
 			if(darkLevel < maxDarkness)
-				sprite.spriteId = darkLevel + 1;
+				sprite.spriteId = Random.Range(darkLevel, FLASH_LEVEL);
 			if(flashTimeStart + FLASH_TIME < Time.time)
 				doFlash = false;
 		}
