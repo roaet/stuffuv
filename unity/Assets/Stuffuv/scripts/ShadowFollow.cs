@@ -6,7 +6,6 @@ public class ShadowFollow : MonoBehaviour {
 	tk2dCamera cam;
 	tk2dSprite sprite;
 	public Transform target;
-	public float followSpeed = 1.0f;
 	
 	private int minDarkness = 1;
 	private int maxDarkness = 6;
