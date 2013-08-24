@@ -6,6 +6,8 @@ public class Striker : MonoBehaviour {
 	public tk2dSprite strikeZone;
 	public tk2dSprite strikeMeter;
 	public tk2dSprite strikeBubble;
+	public MatchSounder matchSounds;
+	public ShadowFollow darkness;
 	
 	public Transform target;
 	
@@ -38,6 +40,8 @@ public class Striker : MonoBehaviour {
 			}
 			if(Input.GetKeyDown(KeyCode.Space)) {
 				strikerEnabled = true;
+				matchSounds.PlayStrikeSound();
+				darkness.FlashDarkness();
 			}
 			return;
 		}
@@ -47,6 +51,7 @@ public class Striker : MonoBehaviour {
 				r.enabled = true;
 			}
 			if(Input.GetKeyDown(KeyCode.Space)) {
+				darkness.FlashDarkness();
 				if(!CheckStrike()) {
 					Fail ();	
 				} else Success();
@@ -77,6 +82,7 @@ public class Striker : MonoBehaviour {
 	
 	void Fail() {
 		SetBubbleToStart();
+		matchSounds.PlayStrikeSound();
 		bubbleDirection = RIGHT;
 		if(bubbleSpeed < MAX_SPEED) 
 			bubbleSpeed += SPEED_STEP;
@@ -93,6 +99,8 @@ public class Striker : MonoBehaviour {
 		strikerEnabled = false;
 		DisableStriker();
 		Reset(false);
+		matchSounds.PlayLightSound();
+		darkness.MaxLight();
 	}
 	
 	bool CheckStrike() {
