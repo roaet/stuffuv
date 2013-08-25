@@ -40,8 +40,13 @@ public class Striker : MonoBehaviour {
 			}
 			if(Input.GetKeyDown(KeyCode.Space)) {
 				strikerEnabled = true;
-				matchSounds.PlayStrikeSound();
-				darkness.FlashDarkness();
+				if(darkness.GetDarkLevel() != 1) {
+					matchSounds.PlayHissSound();
+					darkness.MinLight();
+				} else {
+					matchSounds.PlayStrikeSound();
+					darkness.FlashDarkness();
+				}
 			}
 			return;
 		}

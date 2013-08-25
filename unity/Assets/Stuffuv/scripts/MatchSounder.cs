@@ -4,7 +4,13 @@ using System.Collections;
 public class MatchSounder : MonoBehaviour {
 
 	public AudioSource[] lightsounds;
+	public AudioSource[] hisssounds;
 	public AudioSource[] strikesounds;
+	
+	public void PlayHissSound() {
+		int idx = Random.Range(0, hisssounds.Length);
+		hisssounds[idx].Play();
+	}
 	
 	public void PlayLightSound() {
 		int idx = Random.Range(0, lightsounds.Length);
