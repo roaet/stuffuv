@@ -37,6 +37,10 @@ public class ShadowFollow : MonoBehaviour {
 		return darkLevel;
 	}
 	
+	public int GetMaxDarkLevel() {
+		return maxDarkness;
+	}
+	
 	public float GetFollowDistance() {
 		switch(darkLevel) {
 		case 1:

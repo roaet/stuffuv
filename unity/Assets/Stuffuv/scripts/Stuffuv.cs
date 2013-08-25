@@ -17,15 +17,27 @@ public class Stuffuv : MonoBehaviour {
 	private float pushOutDelay;
 	private float pushOutStart;
 	private bool pushedOut;
+	
+	private int GROWL_ONE_OUT_OF = 5;
+	private int GROWL_TIME_CHECK = 5;
+	private float growlCheck;
+	private bool checkGrowl;
+	
+	private AudioSource growl;
 
 	// Use this for initialization
 	void Awake () {
 		pushedOut = false;
+		checkGrowl = true;
+		growl = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+		if(checkGrowl) {
+			checkGrowl = false;
+			growlCheck = Time.time;
+		}
 	}
 	
 	void FixedUpdate() {
@@ -54,6 +66,14 @@ public class Stuffuv : MonoBehaviour {
 		if (!pushedOut || doPushOut) {
 			end.z = start.z;
 			transform.position = end;
+		}
+		
+		if(growlCheck + GROWL_TIME_CHECK < Time.time) {
+			int r = Random.Range(0, GROWL_ONE_OUT_OF + darkness.GetDarkLevel() - 1);
+			if(r == 0) {
+				growl.Play();
+			}
+			checkGrowl = true;
 		}
 	}
 }
