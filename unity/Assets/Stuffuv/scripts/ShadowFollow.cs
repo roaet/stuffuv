@@ -6,13 +6,14 @@ public class ShadowFollow : MonoBehaviour {
 	tk2dCamera cam;
 	tk2dSprite sprite;
 	public Transform target;
+	public Striker striker;
 	
-	private int minDarkness = 1;
-	private int maxDarkness = 6;
-	private float FLASH_TIME = 0.01f;
-	private float LIGHT_SPILL = 0.1f;
-	private float LIGHT_CONSUME = 0.01f;
-	private float MATCH_DEATH = 20.0f;
+	private static int minDarkness = 1;
+	private static int maxDarkness = 6;
+	private static float FLASH_TIME = 0.01f;
+	private static float LIGHT_SPILL = 0.1f;
+	private static float LIGHT_CONSUME = 0.1f;
+	private float MATCH_DEATH = 10.0f;
 	private int FLASH_LEVEL = 4;
 	private int darkLevel;
 	private bool doFlash;
@@ -24,6 +25,9 @@ public class ShadowFollow : MonoBehaviour {
 	private float deathTimeSteps;
 	private float litMatchTimeStart;
 	
+	
+	private bool disableDarkness;
+	
 	void Awake() {
 		darkLevel = minDarkness;
 		sprite = GetComponent<tk2dSprite>();
@@ -31,9 +35,19 @@ public class ShadowFollow : MonoBehaviour {
 		maxLight = true;
 		minLight = false;
 		deathTimeSteps = MATCH_DEATH/maxDarkness;
+		disableDarkness = false;
+	}
+	
+	public static float SnuffTime() {
+		return maxDarkness * LIGHT_CONSUME;
+	}
+	
+	public bool IsDarkDisabled() {
+		return disableDarkness;	
 	}
 	
 	public int GetDarkLevel() {
+		if(disableDarkness) return maxDarkness;
 		return darkLevel;
 	}
 	
@@ -79,20 +93,33 @@ public class ShadowFollow : MonoBehaviour {
 		minTimeStart = Time.time;
 	}
 	
+	public void DisableDarkness() {
+		disableDarkness = true;	
+	}
+	
 	
 	void Update() {
 		if(Debug.isDebugBuild) {
 			if(Input.GetKeyDown(KeyCode.Q)) {
 				if(darkLevel > minDarkness) darkLevel--;
+		
+				if(darkLevel == minDarkness) {
+				}
 			}
 			else if(Input.GetKeyDown(KeyCode.E)) {
 				if(darkLevel < maxDarkness) darkLevel++;
+			}
+			if(Input.GetKeyDown(KeyCode.R)) {
+				disableDarkness = !disableDarkness;	
 			}
 		}
 		if(litMatchTimeStart + deathTimeSteps < Time.time) {
 			if(darkLevel > minDarkness) {
 				darkLevel--;
 				litMatchTimeStart = Time.time;
+				if(darkLevel == minDarkness) {
+					minLight = false;
+				}
 			}
 		}
 		
@@ -123,7 +150,14 @@ public class ShadowFollow : MonoBehaviour {
 			if(flashTimeStart + FLASH_TIME < Time.time)
 				doFlash = false;
 		}
-		
+		sprite.renderer.enabled = !disableDarkness;
+	}
+	
+	void SnuffPlayerMatch() {
+		Player p = target.GetComponent<Player>();
+		if(p) {
+			p.SnuffMatch();	
+		}
 	}
 
 	void FixedUpdate() {

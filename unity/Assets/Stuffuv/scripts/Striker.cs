@@ -8,12 +8,12 @@ public class Striker : MonoBehaviour {
 	public tk2dSprite strikeBubble;
 	public MatchSounder matchSounds;
 	public ShadowFollow darkness;
+	public MatchbookSelector selector;
 	
 	public Transform target;
 	
 	private float meterWidth;
 	private float bubbleWidth;
-	private float bubbleLocation;
 	private float bubbleDirection;
 	private float bubbleSpeed;
 	private bool strikerEnabled;
@@ -24,28 +24,56 @@ public class Striker : MonoBehaviour {
 	private const float SPEED_STEP = 0.05f;
 	private const float MAX_SPEED = 0.2f;
 	
+	private MatchColor lightAttempt;
+	
 	
 	void Awake() {
 		meterWidth = strikeMeter.CurrentSprite.GetBounds().size.x;
 		bubbleWidth = strikeBubble.CurrentSprite.GetBounds().size.x;
-		Reset(true);
+		Reset();
 		strikerEnabled = false;
 	}
 	
+	void HideStriker() {
+		var renderers = gameObject.GetComponentsInChildren<Renderer>();
+		foreach(Renderer r in renderers) {
+			r.enabled = false;
+		}
+	}
+	
 	void Update() {
-		if(!strikerEnabled) {
-			var renderers = gameObject.GetComponentsInChildren<Renderer>();
-			foreach(Renderer r in renderers) {
-				r.enabled = false;
+		if(darkness.IsDarkDisabled()) return;
+		
+		Player p = target.GetComponent<Player>();
+		
+		if(Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift)) {
+			Debug.Log(p.HoldingMatch());
+			if(p.HoldingMatch()) {
+				SnuffMatch(true);	
 			}
+			return;
+		} 
+		
+		//*
+		if(!strikerEnabled && p && !p.HasAnyMatches()) {
+			Reset ();
+			SetBubbleToStart();
+			strikerEnabled = false;
+			return;
+		}
+		
+		
+		if(!strikerEnabled) {		
 			if(Input.GetKeyDown(KeyCode.Space)) {
-				strikerEnabled = true;
-				if(darkness.GetDarkLevel() != 1) {
-					matchSounds.PlayHissSound();
-					darkness.MinLight();
-				} else {
+				if(p.HoldingMatch() && darkness.GetDarkLevel() == 1) {
+					p.SnuffMatch();	
+				}
+				if(!p.HoldingMatch()) {
+					strikerEnabled = true;
 					matchSounds.PlayStrikeSound();
 					darkness.FlashDarkness();
+					lightAttempt = selector.GetSelection();
+					p.UseMatch(lightAttempt);
 				}
 			}
 			return;
@@ -62,14 +90,24 @@ public class Striker : MonoBehaviour {
 				} else Success();
 			}
 		}
+		//*/
 	}
 	
-	void Reset(bool firstRun) {
-		if(firstRun) {
-			bubbleLocation = 0.0f;
-		} else {
-			SetBubbleToStart();
+	void SnuffMatch(bool doCallbacks) {
+		Player p = target.GetComponent<Player>();
+		if(p) {
+			p.SnuffMatch();	
 		}
+		matchSounds.PlayHissSound();
+		darkness.MinLight();
+		Reset ();
+	}
+	
+	void Reset() {
+		HideStriker();
+		strikerEnabled = false;
+		lightAttempt = MatchColor.Invalid;
+		SetBubbleToStart();
 		bubbleDirection = RIGHT;
 		bubbleSpeed = MIN_SPEED;
 	}
@@ -97,13 +135,18 @@ public class Striker : MonoBehaviour {
 		var renderers = gameObject.GetComponentsInChildren<Renderer>();
 		foreach(Renderer r in renderers) {
 			r.enabled = false;
+			lightAttempt = MatchColor.Invalid;
 		}
 	}
 	
 	void Success() {
+		Player p = target.GetComponent<Player>();
+		if(!p) return;
+		p.HandleMatchLight(lightAttempt);
+		
 		strikerEnabled = false;
 		DisableStriker();
-		Reset(false);
+		Reset();
 		matchSounds.PlayLightSound();
 		darkness.MaxLight();
 	}

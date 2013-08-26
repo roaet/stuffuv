@@ -3,12 +3,10 @@ using System.Collections;
 
 public class BorderController : MonoBehaviour {
 
-	tk2dSprite sprite;
 	public Transform target;
 	private float borderOffsetX;
 	
 	void Awake() {
-		sprite = GetComponent<tk2dSprite>();
 		borderOffsetX = 0.5f;
 	}
 	

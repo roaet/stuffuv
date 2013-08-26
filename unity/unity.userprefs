@@ -1,17 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Stuffuv\scripts\Player.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Stuffuv\scripts\MatchbookSelector.cs">
     <Files>
-      <File FileName="Assets\Stuffuv\scripts\BorderController.cs" Line="28" Column="2" />
-      <File FileName="Assets\Stuffuv\scripts\Stuffuv.cs" Line="1" Column="1" />
+      <File FileName="Assets\Stuffuv\scripts\StuffuvController.cs" Line="21" Column="18" />
       <File FileName="Assets\Stuffuv\scripts\ShadowFollow.cs" Line="1" Column="1" />
-      <File FileName="Assets\Stuffuv\scripts\FollowCam.cs" Line="1" Column="1" />
-      <File FileName="Assets\Stuffuv\scripts\Player.cs" Line="84" Column="33" />
-      <File FileName="Assets\Stuffuv\scripts\Striker.cs" Line="1" Column="1" />
-      <File FileName="Assets\Stuffuv\scripts\MatchSounder.cs" Line="8" Column="36" />
-      <File FileName="Assets\TK2DROOT\tk2dTileMap_demo\Demo1\Scripts\tk2dTileMapDemoFollowCam.cs" Line="1" Column="1" />
-      <File FileName="Assets\TK2DROOT\tk2dTileMap_demo\Demo1\Scripts\tk2dTileMapDemoPlayer.cs" Line="1" Column="1" />
-      <File FileName="Assets\Stuffuv\scripts\PlayerSounder.cs" Line="24" Column="23" />
+      <File FileName="Assets\Stuffuv\scripts\Stuffuv.cs" Line="1" Column="1" />
+      <File FileName="Assets\Stuffuv\scripts\Striker.cs" Line="124" Column="19" />
+      <File FileName="Assets\Stuffuv\scripts\Player.cs" Line="200" Column="15" />
+      <File FileName="Assets\Stuffuv\scripts\TeleporterController.cs" Line="19" Column="4" />
+      <File FileName="Assets\Stuffuv\scripts\MatchBook.cs" Line="4" Column="58" />
+      <File FileName="Assets\Stuffuv\scripts\Spawner.cs" Line="10" Column="2" />
+      <File FileName="Assets\Stuffuv\scripts\MatchbookSelector.cs" Line="120" Column="35" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -5,15 +5,15 @@ public class Stuffuv : MonoBehaviour {
 	
 	public Transform target;
 	public ShadowFollow darkness;
-	public float followSpeed = 1.0f;
+	public float followSpeed = 4.0f;
 
 	public float minZoomSpeed = 20.0f;
 	public float maxZoomSpeed = 40.0f;
 
 	public float maxZoomFactor = 0.6f;
 	
-	private float PUSH_OUT_DELAY_MIN = 1.0f;
-	private float PUSH_OUT_DELAY_MAX = 3.0f;
+	private float PUSH_OUT_DELAY_MIN = 0.5f;
+	private float PUSH_OUT_DELAY_MAX = 1.5f;
 	private float pushOutDelay;
 	private float pushOutStart;
 	private bool pushedOut;
@@ -23,13 +23,18 @@ public class Stuffuv : MonoBehaviour {
 	private float growlCheck;
 	private bool checkGrowl;
 	
-	private AudioSource growl;
+	private int DARK_LONG_ENOUGH  = 1;
+	private float darkTimer;
+	private bool checkDark;
+	
+	public AudioSource growl;
+	public AudioSource scream;
 
 	// Use this for initialization
 	void Awake () {
 		pushedOut = false;
 		checkGrowl = true;
-		growl = GetComponent<AudioSource>();
+		checkDark = true;
 	}
 	
 	// Update is called once per frame
@@ -38,6 +43,14 @@ public class Stuffuv : MonoBehaviour {
 			checkGrowl = false;
 			growlCheck = Time.time;
 		}
+		bool isDark = darkness.GetDarkLevel() == 1;
+		if(isDark && checkDark) {
+			darkTimer = Time.time;
+			checkDark = false;
+		}
+		if(!isDark) {
+			checkDark = true;	
+		}
 	}
 	
 	void FixedUpdate() {
@@ -45,17 +58,28 @@ public class Stuffuv : MonoBehaviour {
 		float d = Vector3.Distance(start, target.position);
 		float darkDistance = darkness.GetFollowDistance();
 		
-		Vector3 end = Vector3.MoveTowards(start, target.position, followSpeed * Time.deltaTime);
+		bool totalDark = false;
+		if(darkness.GetDarkLevel() == 1 && darkTimer + DARK_LONG_ENOUGH < Time.time) {
+			totalDark = true;
+		} 
+		int velocityMultiplier = 1;
+		
 		bool doPushOut = false;
 		if(pushedOut && pushOutStart + pushOutDelay < Time.time) {
 			pushedOut = false;
 		}
+		if(totalDark) {
+			velocityMultiplier = 4;	
+		}
 		if(d > 35) {
-			end = Vector3.MoveTowards(start, target.position, 5 * followSpeed * Time.deltaTime);
+			velocityMultiplier = 5;
 		}
 		if(d > 50) {
-			end = Vector3.MoveTowards(start, target.position, 15 * followSpeed * Time.deltaTime);
+			velocityMultiplier = 15;
 		}
+		
+		Vector3 end = Vector3.MoveTowards(start, target.position, velocityMultiplier * followSpeed * Time.deltaTime);
+		
 		if(d < darkDistance) {
 			pushOutStart = Time.time;
 			pushOutDelay = Random.Range (PUSH_OUT_DELAY_MIN, PUSH_OUT_DELAY_MAX);
@@ -71,9 +95,18 @@ public class Stuffuv : MonoBehaviour {
 		if(growlCheck + GROWL_TIME_CHECK < Time.time) {
 			int r = Random.Range(0, GROWL_ONE_OUT_OF + darkness.GetDarkLevel() - 1);
 			if(r == 0) {
-				growl.Play();
+				if(totalDark) {
+					scream.Play();
+				} else	growl.Play();
 			}
+			
 			checkGrowl = true;
 		}
+	}
+	
+	void OnTriggerEnter(Collider other) {
+		if(!other) return;
+		Player player = other.gameObject.GetComponent<Player>();
+		if(player) player.KillPlayer();
 	}
 }

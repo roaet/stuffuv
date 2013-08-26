@@ -3,7 +3,6 @@ using System.Collections;
 
 public class FollowCam : MonoBehaviour {
 
-	tk2dCamera cam;
 	public Transform target;
 	public float followSpeed = 1.0f;
 
@@ -13,7 +12,6 @@ public class FollowCam : MonoBehaviour {
 	public float maxZoomFactor = 0.6f;
 
 	void Awake() {
-		cam = GetComponent<tk2dCamera>();
 	}
 
 	void FixedUpdate() {
